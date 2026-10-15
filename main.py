@@ -1,41 +1,72 @@
 # Online Game Store
+import math
 
 games = {
     1: {"name": "Minecraft", "price": 99.90},
     2: {"name": "Grand Theft Auto V", "price": 89.90},
     3: {"name": "The Witcher 3", "price": 79.90},
     4: {"name": "Stardew Valley", "price": 24.90},
-    5: {"name": "Hollow Knight", "price": 46.90}
+    5: {"name": "Hollow Knight", "price": 46.90},
+    6: {"name": "Terraria", "price": 19.90},
+    7: {"name": "Celeste", "price": 36.99},
+    8: {"name": "Hades", "price": 73.99},
+    9: {"name": "Red Dead Redemption 2", "price": 249.90},
+    10: {"name": "Cyberpunk 2077", "price": 199.90},
+    11: {"name": "Elden Ring", "price": 229.90},
+    12: {"name": "Portal 2", "price": 21.99},
+    13: {"name": "Undertale", "price": 20.99},
+    14: {"name": "Cuphead", "price": 54.99},
+    15: {"name": "Among Us", "price": 9.99}
 }
 
 cart = []
 
 
-def show_games():
-    print("\n===== AVAILABLE GAMES =====")
+def show_games(page):
+    game_list = list(games.items())
+    total_pages = math.ceil(len(game_list) / 5)
 
-    for game_id, game in games.items():
+    start = (page - 1) * 5
+    end = start + 5
+
+    print(f"\n===== AVAILABLE GAMES (Page {page}/{total_pages}) =====")
+
+    for game_id, game in game_list[start:end]:
         print(f"{game_id} - {game['name']} - R$ {game['price']:.2f}")
 
+    return total_pages
 
 def add_to_cart():
-    show_games()
+    page = 1
 
     while True:
-        try:
-            game_id = int(input("\nEnter the ID of the game you want to buy (0 to finish): "))
+        total_pages = show_games(page)
 
-            if game_id == 0:
-                break
+        print("\n[N] Next page | [P] Previous page | [0] Finish")
+        choice = input("Enter a game ID or an option: ").strip().lower()
 
-            if game_id in games:
-                cart.append(games[game_id])
-                print(f"{games[game_id]['name']} added to your cart!")
+        if choice == "0":
+            break
+
+        elif choice == "n":
+            if page < total_pages:
+                page += 1
             else:
-                print("Game not found.")
+                print("You are already on the last page.")
 
-        except ValueError:
-            print("Please enter a valid number.")
+        elif choice == "p":
+            if page > 1:
+                page -= 1
+            else:
+                print("You are already on the first page.")
+
+        elif choice.isdigit() and int(choice) in games:
+            game_id = int(choice)
+            cart.append(games[game_id])
+            print(f"{games[game_id]['name']} added to your cart!")
+
+        else:
+            print("Invalid option or game not found.")
 
 def calculate_total():
     total = 0
