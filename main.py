@@ -37,6 +37,21 @@ def add_to_cart():
         except ValueError:
             print("Please enter a valid number.")
 
+def calculate_total():
+    total = 0
+    for game in cart:
+        total += game["price"]
+    return total
+
+
+def calculate_discount(total):
+    if total >= 200:
+        rate = 0.20
+    elif total >= 100:
+        rate = 0.10
+    else:
+        rate = 0.0
+    return rate
 
 def show_cart():
     if len(cart) == 0:
@@ -45,14 +60,17 @@ def show_cart():
 
     print("\n===== YOUR CART =====")
 
-    total = 0
-
     for i, game in enumerate(cart, 1):
         print(f"{i} - {game['name']} - R$ {game['price']:.2f}")
-        total += game["price"]
 
-    print(f"\nTotal: R$ {total:.2f}")
+    subtotal = calculate_total()
+    discount_rate = calculate_discount(subtotal)
+    discount_value = subtotal * discount_rate
+    final_total = subtotal - discount_value
 
+    print(f"\nSubtotal: R$ {subtotal:.2f}")
+    print(f"Discount ({discount_rate * 100:.0f}%): -R$ {discount_value:.2f}")
+    print(f"Total: R$ {final_total:.2f}")
 
 def checkout():
     if len(cart) == 0:
@@ -63,7 +81,7 @@ def checkout():
 
     answer = input("\nDo you want to complete the purchase? (y/n): ")
 
-    if answer.lower() == "y":
+    if answer.strip().lower() == "y":
         print("\n===== PURCHASE COMPLETED =====")
         print("Thank you for your purchase!")
 
