@@ -47,26 +47,45 @@ def add_to_cart():
 
         if choice == "0":
             break
-
         elif choice == "n":
             if page < total_pages:
                 page += 1
             else:
                 print("You are already on the last page.")
-
         elif choice == "p":
             if page > 1:
                 page -= 1
             else:
                 print("You are already on the first page.")
-
         elif choice.isdigit() and int(choice) in games:
             game_id = int(choice)
-            cart.append(games[game_id])
-            print(f"{games[game_id]['name']} added to your cart!")
-
+            if games[game_id] in cart:
+                print(f"{games[game_id]['name']} is already in your cart.")
+            else:
+                cart.append(games[game_id])
+                print(f"{games[game_id]['name']} added to your cart!")
         else:
             print("Invalid option or game not found.")
+
+def remove_from_cart():
+    if len(cart) == 0:
+        print("\nYour cart is empty. Nothing to remove.")
+        return
+
+    show_cart()
+
+    while True:
+        choice = input("\nEnter the number of the item to remove (0 to cancel): ").strip()
+
+        if choice == "0":
+            print("No item removed.")
+            break
+        elif choice.isdigit() and 1 <= int(choice) <= len(cart):
+            removed = cart.pop(int(choice) - 1)
+            print(f"{removed['name']} removed from your cart.")
+            break
+        else:
+            print("Invalid item number.")
 
 def calculate_total():
     total = 0
@@ -132,8 +151,9 @@ while True:
     print("==============================")
     print("1 - Buy games")
     print("2 - View cart")
-    print("3 - Checkout")
-    print("4 - Exit")
+    print("3 - Remove game from cart")
+    print("4 - Checkout")
+    print("5 - Exit")
 
     option = input("\nChoose an option: ")
 
@@ -144,11 +164,17 @@ while True:
         show_cart()
 
     elif option == "3":
-        checkout()
+
+        remove_from_cart()
 
     elif option == "4":
-        print("Thank you for visiting the store!")
-        break
 
+        checkout()
+
+    elif option == "5":
+
+        print("Thank you for visiting the store!")
+
+        break
     else:
         print("Invalid option.")
